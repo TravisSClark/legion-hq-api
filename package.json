@@ -1,9 +1,8 @@
 {
   "name": "legion-hq-api",
   "version": "1.0.0",
-  "type": "module",
   "description": "",
-  "exports": "./start.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,8 +14,8 @@
     "express": "^4.19.2",
     "http": "0.0.0",
     "https": "^1.0.0",
-    "aws-sdk": "^2.1685.0",
-    "@aws-sdk/client-dynamodb": "^3.637.0"
+    "mongoose": "^5.13.22",
+    "mongoose-auto-increment": "^5.0.1"
   },
   "devDependencies": {
     "eslint": "^6.5.1",
