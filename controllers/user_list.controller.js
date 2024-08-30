@@ -1,4 +1,4 @@
-const UserList = require('../models/user_list.model.js');
+import * as UserList from '../user_list.js';
 
 exports.create = (req, res) => {
   // TODO: do better/more validation for this...
@@ -11,6 +11,7 @@ exports.create = (req, res) => {
     ...req.body,
     title: req.body.title === '' ? 'Untitled' : req.body.title
   });
+  // gotta incrememnt the list_id
   userList.save().then(data => {
     res.send(data);
   }).catch(error => {

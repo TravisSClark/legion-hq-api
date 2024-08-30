@@ -1,5 +1,6 @@
-module.exports = (app, autoIncrement) => {
-  const users = require('../controllers/user.controller.js');
+import * as users from '../controllers/user.controller';
+exports = (app, autoIncrement) => {
+ 
   // TODO: app.get('/users', users.findAll);
   app.get('/users', users.findByEmail);
   app.get('/users/:userId', users.findByUserId);

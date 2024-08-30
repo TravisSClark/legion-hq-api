@@ -1,4 +1,4 @@
-const User = require('../models/user.model.js');
+import *  as User from '../user';
 
 exports.create = (req, res) => {
   if (!req.body.email) {
@@ -10,6 +10,7 @@ exports.create = (req, res) => {
     email: req.body.email,
     settings: req.body.settings || {}
   });
+  // gotta incrememnt the userId
   user.save().then(data => {
     res.send(data);
   }).catch(error => {
