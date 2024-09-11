@@ -1,5 +1,5 @@
 import * as users from '../controllers/user.controller';
-exports = (app, autoIncrement) => {
+exports = (app) => {
  
   // TODO: app.get('/users', users.findAll);
   app.get('/users', users.findByEmail);

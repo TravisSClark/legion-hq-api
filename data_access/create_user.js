@@ -1,27 +1,31 @@
 var AWS = require("aws-sdk");
+
 AWS.config.update({region: "us-east-1"});
 
 var ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
+
+const email = "email";
+const userId = "userId";
 
 var params = {
   TableName: "users",
   AttributeDefinitions: [
     {
-      AttributeName: "email",
+      AttributeName: email,
       AttributeType: "S",
     },
     {
-      AttributeName: "userId",
+      AttributeName: userId,
       AttributeType: "N",
     }
   ],
   KeySchema: [
     {
-      AttributeName: "userId",
+      AttributeName: userId,
       KeyType: "HASH",
     },
     {
-      AttributeName: "email",
+      AttributeName: email,
       KeyType: "RANGE",
     }
   ],
@@ -51,14 +55,7 @@ ddb.createTable(params, function (err, data) {
 //     AttributeName: "email",
 //     AttributeType: "S",
 //   },
-//   {
-//     AttributeName: "settings",
-//     KeyType: "M",
-//   }
-// ],
-// KeySchema: [
-//   {
 //     AttributeName: "userId",
 //     AttributeType: "N",
 //   },
-// ]
+// ],

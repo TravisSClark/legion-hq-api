@@ -1,27 +1,31 @@
 var AWS = require("aws-sdk");
+
 AWS.config.update({region: "us-east-1"});
 
 var ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
+
+const listId = "listId";
+const userId = "userId";
 
 var params = {
   TableName: "user_lists",
   AttributeDefinitions: [
     {
-      AttributeName: "listId",
+      AttributeName: listId,
       AttributeType: "N",
     },
     {
-      AttributeName: "userId",
+      AttributeName: userId,
       AttributeType: "N",
     }
   ],
   KeySchema: [
     {
-      AttributeName: "listId",
+      AttributeName: listId,
       KeyType: "HASH",
     },
     {
-      AttributeName: "userId",
+      AttributeName: userId,
       KeyType: "RANGE",
     }
   ],
@@ -116,10 +120,9 @@ ddb.createTable(params, function (err, data) {
 //   {
 //     AttributeName: "unitCounts",
 //     AttributeType: "M",
-//   }
-// ],
-// KeySchema: [
-//   {
-//     AttributeName: "listId",
-//     KeyType: "N",
 //   },
+// {
+  //     AttributeName: "listId",
+  //     KeyType: "N",
+  //   },
+// ]
