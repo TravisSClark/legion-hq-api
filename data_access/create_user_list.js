@@ -12,11 +12,11 @@ var params = {
   AttributeDefinitions: [
     {
       AttributeName: listId,
-      AttributeType: "N",
+      AttributeType: "S",
     },
     {
       AttributeName: userId,
-      AttributeType: "N",
+      AttributeType: "S",
     }
   ],
   KeySchema: [

@@ -16,7 +16,7 @@ var params = {
     },
     {
       AttributeName: userId,
-      AttributeType: "N",
+      AttributeType: "S",
     }
   ],
   KeySchema: [
