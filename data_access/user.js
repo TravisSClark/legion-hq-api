@@ -85,9 +85,27 @@ function findUserByUserId(queryUserId) {
     if (err) {
       console.log("Error", err);
     } else {
-      console.log("Success", data);
+      console.log("Success", data.Items);
     }
   });
 }
 
-module.exports = { User, createUserTable, createNewUser, findUserByUserId }
+function findUserByEmail(scanEmail) {
+  var params = {
+    TableName: userTableName,
+    ExpressionAttributeValues: {
+      ":e": { S: scanEmail }
+    },
+    FilterExpression: "email = :e"
+  };
+  
+  ddb.scan(params, function (err, data) {
+    if (err) {
+      console.log("Error", err);
+    } else {
+      console.log("Success", data.Items);
+    }
+  });
+}
+
+module.exports = { User, createUserTable, createNewUser, findUserByUserId, findUserByEmail }
