@@ -4,7 +4,34 @@ var ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
 
 const userListTableName = "user_lists";
 
-function createUserListTables() {
+function UserList(obj) {
+  this.userId;
+  this.listId;
+  this.pointTotal = 0;
+  this.numActivations = 0;
+  this.faction = "";
+  this.battleforce = "";
+  this.mode = "";
+  this.title = "";
+  this.notes = "";
+  this.units = [];
+  this.primaryCards = [];
+  this.secondaryCards = [];
+  this.advantageCards = [];
+  this.objectiveCards = [];
+  this.deploymentCards = [];
+  this.conditionCards = [];
+  this.uniques = [];
+  this.commanders = [];
+  this.unitObjectStrings = [];
+  this.unitCounts = {};
+  this.createdAt = "";
+  this.updatedAt = "";
+
+  for (var prop in obj) this[prop] = obj[prop];
+}
+
+function createUserListTable() {
   const listId = "listId";
   const userId = "userId";
 
@@ -45,86 +72,28 @@ function createUserListTables() {
   });
 }
 
-// You only need to define the keys for DynamoDB but this is the rest of the schema
-// AttributeDefinitions: [
-//   {
-//     AttributeName: "pointTotal",
-//     AttributeType: "N",
-//   },
-//   {
-//     AttributeName: "userId",
-//     AttributeType: "N",
-//   },
-//   {
-//     AttributeName: "numActivations",
-//     AttributeType: "N",
-//   },
-//   {
-//     AttributeName: "faction",
-//     AttributeType: "S",
-//   },
-//   {
-//     AttributeName: "mode",
-//     AttributeType: "S",
-//   },
-//   {
-//     AttributeName: "title",
-//     AttributeType: "S",
-//   },
-//   {
-//     AttributeName: "notes",
-//     AttributeType: "S",
-//   },
-//   {
-//     AttributeName: "units",
-//     AttributeType: "L",
-//   },
-//   {
-//     AttributeName: "primaryCards",
-//     AttributeType: "L",
-//   },
-//   {
-//     AttributeName: "secondaryCards",
-//     AttributeType: "L",
-//   },
-//   {
-//     AttributeName: "advantageCards",
-//     AttributeType: "L",
-//   },
-//   {
-//     AttributeName: "objectiveCards",
-//     AttributeType: "L",
-//   },
-//   {
-//     AttributeName: "deploymentCards",
-//     AttributeType: "L",
-//   },
-//   {
-//     AttributeName: "conditionCards",
-//     AttributeType: "L",
-//   },
-//   {
-//     AttributeName: "uniques",
-//     AttributeType: "L",
-//   },
-//   {
-//     AttributeName: "uniques",
-//     AttributeType: "L",
-//   },
-//   {
-//     AttributeName: "commanders",
-//     AttributeType: "L",
-//   },
-//   {
-//     AttributeName: "unitObjectStrings",
-//     AttributeType: "L",
-//   },
-//   {
-//     AttributeName: "unitCounts",
-//     AttributeType: "M",
-//   },
-// {
-  //     AttributeName: "listId",
-  //     KeyType: "N",
-  //   },
-// ]
+function createNewList(obj) {
+  
+}
+
+function updateList(obj) {
+  
+}
+
+function deleteList(deleteListId) {
+
+}
+
+function findListsForUser(queryUserId) {
+
+}
+
+function findList(queryListId) {
+  
+}
+
+function findList(queryListId) {
+  
+}
+
+module.exports = { UserList, createUserListTable, createNewList, updateList, deleteList, findListsForUser, findList }
