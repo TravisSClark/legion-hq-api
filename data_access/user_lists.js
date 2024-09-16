@@ -1,47 +1,49 @@
 var AWS = require("aws-sdk");
-
 AWS.config.update({region: "us-east-1"});
-
 var ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
 
-const listId = "listId";
-const userId = "userId";
+const userListTableName = "user_lists";
 
-var params = {
-  TableName: "user_lists",
-  AttributeDefinitions: [
-    {
-      AttributeName: listId,
-      AttributeType: "S",
-    },
-    {
-      AttributeName: userId,
-      AttributeType: "S",
-    }
-  ],
-  KeySchema: [
-    {
-      AttributeName: listId,
-      KeyType: "HASH",
-    },
-    {
-      AttributeName: userId,
-      KeyType: "RANGE",
-    }
-  ],
-  ProvisionedThroughput: {
-    ReadCapacityUnits: 1,
-    WriteCapacityUnits: 1,
-  } 
-};
+function createUserListTables() {
+  const listId = "listId";
+  const userId = "userId";
 
-ddb.createTable(params, function (err, data) {
-  if (err) {
-    console.log("Error", err);
-  } else {
-    console.log("Table Created", data);
-  }
-});
+  var params = {
+    TableName: userListTableName,
+    AttributeDefinitions: [
+      {
+        AttributeName: listId,
+        AttributeType: "S",
+      },
+      {
+        AttributeName: userId,
+        AttributeType: "S",
+      }
+    ],
+    KeySchema: [
+      {
+        AttributeName: listId,
+        KeyType: "HASH",
+      },
+      {
+        AttributeName: userId,
+        KeyType: "RANGE",
+      }
+    ],
+    ProvisionedThroughput: {
+      ReadCapacityUnits: 1,
+      WriteCapacityUnits: 1,
+    } 
+  };
+  
+  ddb.createTable(params, function (err, data) {
+    if (err) {
+      console.log("Error", err);
+    } else {
+      console.log("Table Created", data);
+    }
+  });
+}
 
 // You only need to define the keys for DynamoDB but this is the rest of the schema
 // AttributeDefinitions: [

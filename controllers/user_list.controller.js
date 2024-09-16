@@ -1,4 +1,4 @@
-import * as UserList from '../user_list.js';
+import * as UserList from '../models/user_list.js';
 
 exports.create = (req, res) => {
   // TODO: do better/more validation for this...

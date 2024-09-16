@@ -1,4 +1,4 @@
-import *  as User from '../user';
+var { User } = require("../data_access/user")
 
 exports.create = (req, res) => {
   if (!req.body.email) {
