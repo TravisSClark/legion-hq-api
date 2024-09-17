@@ -35,92 +35,94 @@ function UserList(obj) {
 }
 
 function createUserListTable() {
-  const listId = "listId";
-  const userId = "userId";
+	const listId = "listId";
+	const userId = "userId";
 
-  var params = {
-    TableName: userListTableName,
-    AttributeDefinitions: [
-      {
-        AttributeName: listId,
-        AttributeType: "S",
-      },
-      {
-        AttributeName: userId,
-        AttributeType: "S",
-      }
-    ],
-    KeySchema: [
-      {
-        AttributeName: listId,
-        KeyType: "HASH",
-      },
-      {
-        AttributeName: userId,
-        KeyType: "RANGE",
-      }
-    ],
-    ProvisionedThroughput: {
-      ReadCapacityUnits: 1,
-      WriteCapacityUnits: 1,
-    } 
-  };
-  
-  ddb.createTable(params, function (err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      console.log("Table Created", data);
-    }
-  });
+	var params = {
+		TableName: userListTableName,
+		AttributeDefinitions: [
+			{
+			AttributeName: listId,
+			AttributeType: "S",
+			},
+			{
+			AttributeName: userId,
+			AttributeType: "S",
+			}
+		],
+		KeySchema: [
+			{
+			AttributeName: listId,
+			KeyType: "HASH",
+			},
+			{
+			AttributeName: userId,
+			KeyType: "RANGE",
+			}
+		],
+		ProvisionedThroughput: {
+			ReadCapacityUnits: 1,
+			WriteCapacityUnits: 1,
+		} 
+	};
+
+	ddb.createTable(params, function (err, data) {
+		if (err) {
+			console.log("Error", err);
+		} else {
+			console.log("Table Created", data);
+		}
+	});
 }
 
-function createNewList(obj) {
-  var list = new UserList(JSON.parse(obj));
-  list.listId = uuid.v4();
-  list.createdAt = new Date().toISOString();
-  list.updatedAt = list.createdAt;
+function putList(obj) {
+	var list = new UserList(JSON.parse(obj));
+	var listId;
+	var createdAt;
+	if (list.listId) {
+		listId = list.listId;
+		createdAt = list.createdAt;
+	} else {
+		listId = uuid.v4();
+		createdAt = new Date().toISOString();
+	}
 
-  var params = {
-    TableName: userListTableName,
-    Item: {
-      userId: { S: list.userId },
-      listId: { S: list.listId },
-      pointTotal: { N: list.pointTotal.toString() },
-      numActivations: { N: list.numActivations.toString() },
-      faction: { S: list.faction },
-      battleForce: { S: list.battleForce },
-      mode: { S: list.mode },
-      title: { S: list.title },
-      units: AWS.DynamoDB.Converter.input(list.units),
-      commandCards: AWS.DynamoDB.Converter.input(list.commandCards),
-      contingencies: AWS.DynamoDB.Converter.input(list.contingencies),
-      primaryCards: AWS.DynamoDB.Converter.input(list.primaryCards),
-      secondaryCards: AWS.DynamoDB.Converter.input(list.secondaryCards),
-      advantageCards: AWS.DynamoDB.Converter.input(list.advantageCards),
-      objectiveCards: AWS.DynamoDB.Converter.input(list.objectiveCards),
-      deploymentCards: AWS.DynamoDB.Converter.input(list.deploymentCards),
-      conditionCards: AWS.DynamoDB.Converter.input(list.conditionCards),
-      uniques: AWS.DynamoDB.Converter.input(list.uniques),
-      commanders: AWS.DynamoDB.Converter.input(list.commanders),
-      unitObjectStrings: AWS.DynamoDB.Converter.input(list.unitObjectStrings),
-      unitCounts: AWS.DynamoDB.Converter.input(list.unitCounts),
-      createdAt: { S: list.createdAt },
-      updatedAt: { S: list.updatedAt }
-    }
-  };
+	var params = {
+		TableName: userListTableName,
+		Item: {
+			userId: { S: list.userId },
+			listId: { S: listId },
+			pointTotal: { N: list.pointTotal.toString() },
+			numActivations: { N: list.numActivations.toString() },
+			faction: { S: list.faction },
+			battleForce: { S: list.battleForce },
+			mode: { S: list.mode },
+			title: { S: list.title },
+			units: AWS.DynamoDB.Converter.input(list.units),
+			commandCards: AWS.DynamoDB.Converter.input(list.commandCards),
+			contingencies: AWS.DynamoDB.Converter.input(list.contingencies),
+			primaryCards: AWS.DynamoDB.Converter.input(list.primaryCards),
+			secondaryCards: AWS.DynamoDB.Converter.input(list.secondaryCards),
+			advantageCards: AWS.DynamoDB.Converter.input(list.advantageCards),
+			objectiveCards: AWS.DynamoDB.Converter.input(list.objectiveCards),
+			deploymentCards: AWS.DynamoDB.Converter.input(list.deploymentCards),
+			conditionCards: AWS.DynamoDB.Converter.input(list.conditionCards),
+			uniques: AWS.DynamoDB.Converter.input(list.uniques),
+			commanders: AWS.DynamoDB.Converter.input(list.commanders),
+			unitObjectStrings: AWS.DynamoDB.Converter.input(list.unitObjectStrings),
+			unitCounts: AWS.DynamoDB.Converter.input(list.unitCounts),
+			createdAt: { S: createdAt },
+			updatedAt: { S: new Date().toISOString() }
+		}
+	};
 
-  ddb.putItem(params, function (err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      console.log("Success", params.Item, data);
-    }
-  });
-}
-
-function updateList(obj) {
-  
+	ddb.putItem(params, function (err, data) {
+		if (err) {
+			console.log("Error", err);
+		} else {
+			console.log("Success", params.Item, data);
+		}
+	});
 }
 
 function deleteList(deleteListId) {
@@ -300,16 +302,17 @@ var obj = {
 		"unitCounts": {
 			"commander": 1,
 			"operative": 2,
-			"corps": 4,
+			"corps": 5,
 			"special": 2,
 			"support": 0,
 			"heavy": 0
 		},
 		"userId": "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef",
+		"listId": "8f9972fe-fb8d-4320-92b6-dda45426ca9f",
 		"createdAt": "2023-09-26T01:06:17.614Z",
 		"updatedAt": "2024-06-03T02:23:44.663Z",
 }
 
-createNewList(JSON.stringify(obj));
+putList(JSON.stringify(obj));
 
-module.exports = { UserList, createUserListTable, createNewList, updateList, deleteList, findListsForUser, findList }
+module.exports = { UserList, createUserListTable, putList, deleteList, findListsForUser, findList }
