@@ -5,6 +5,8 @@ AWS.config.update({region: "us-east-1"});
 var ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
 
 const userListTableName = "user_lists";
+const listId = "listId";
+const userId = "userId";
 
 function UserList(obj) {
   this.userId;
@@ -35,9 +37,6 @@ function UserList(obj) {
 }
 
 function createUserListTable() {
-	const listId = "listId";
-	const userId = "userId";
-
 	var params = {
 		TableName: userListTableName,
 		AttributeDefinitions: [
@@ -125,20 +124,60 @@ function putList(obj) {
 	});
 }
 
-function deleteList(deleteListId) {
+function deleteList(deleteListId, deleteUserId) {
+	var params = {
+		TableName: userListTableName,
+		Key: {
+			listId: { S: deleteListId },
+			userId: { S: deleteUserId }
+		},
+	};
 
+	ddb.deleteItem(params, function (err, data) {
+		if (err) {
+			console.log("Error", err);
+		} else {
+			console.log("Success", data);
+		}
+	});
 }
 
-function findListsForUser(queryUserId) {
-
+function findListsForUser(scanUserId) {
+	var params = {
+		TableName: userListTableName,
+		ExpressionAttributeValues: {
+			":u": { S: scanUserId }
+		},
+		FilterExpression: userId + " = :u"
+	};
+	  
+	ddb.scan(params, function (err, data) {
+		if (err) {
+			console.log("Error", err);
+		} else {
+			console.log("Success", data);
+		}
+	});
 }
 
-function findList(queryListId) {
-  
-}
-
-function findList(queryListId) {
-  
+function findList(queryListId, queryUserId) {
+	var params = {
+		TableName: userListTableName,
+		ExpressionAttributeValues: {
+			":l": { S: queryListId },
+			":u": { S: queryUserId }
+			
+		},
+		KeyConditionExpression: userId + " = :u and " + listId + " = :l"
+	};
+	  
+	ddb.query(params, function (err, data) {
+		if (err) {
+			console.log("Error", err);
+		} else {
+			console.log("Success", data);
+		}
+	});
 }
 
 var obj = {
@@ -313,6 +352,6 @@ var obj = {
 		"updatedAt": "2024-06-03T02:23:44.663Z",
 }
 
-putList(JSON.stringify(obj));
+findList("8f9972fe-fb8d-4320-92b6-dda45426ca9f", "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef");
 
 module.exports = { UserList, createUserListTable, putList, deleteList, findListsForUser, findList }
