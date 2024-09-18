@@ -352,9 +352,10 @@ async function findList(queryListId, queryUserId) {
 // }
 
 // async function main() {
-// 	console.log(await putList(JSON.stringify(obj)))
+// 	var result = await putList(JSON.stringify(obj));
 // 	// deleteList("2277694e-d456-4056-a17e-d9a108c0f9b8", "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef")
 // 	// const result = await findList("8f9972fe-fb8d-4320-92b6-dda45426ca9f", "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef");
+// 	console.log(result);
 // }
 
 // main();

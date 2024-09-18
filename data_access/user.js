@@ -53,7 +53,7 @@ function createUserTable() {
   });
 }
 
-function createNewUser(userEmail) {
+async function createNewUser(userEmail) {
   var newUserId = uuid.v4();
   var params = {
     TableName: userTableName,
@@ -63,16 +63,15 @@ function createNewUser(userEmail) {
     }
   };
   
-  ddb.putItem(params, function (err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      console.log("Success:", newUserId);
-    }
-  })
+  try {
+		await ddb.putItem(params).promise();
+		return newUserId;
+	} catch (err) {
+		console.error(err);
+	}
 }
 
-function findUserByUserId(queryUserId) {
+async function findUserByUserId(queryUserId) {
   var params = {
     TableName: userTableName,
     ExpressionAttributeValues: {
@@ -81,16 +80,15 @@ function findUserByUserId(queryUserId) {
     KeyConditionExpression: "userId = :i"
   };
   
-  ddb.query(params, function (err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      console.log("Success", data.Items);
-    }
-  });
+  try {
+		var data = await ddb.query(params).promise();
+		return AWS.DynamoDB.Converter.unmarshall(data.Items[0]);
+	} catch (err) {
+		console.error(err);
+	}
 }
 
-function findUserByEmail(scanEmail) {
+async function findUserByEmail(scanEmail) {
   var params = {
     TableName: userTableName,
     ExpressionAttributeValues: {
@@ -99,13 +97,22 @@ function findUserByEmail(scanEmail) {
     FilterExpression: "email = :e"
   };
   
-  ddb.scan(params, function (err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      console.log("Success", data.Items);
-    }
-  });
+  
+  try {
+		var data = await ddb.scan(params).promise();
+		return AWS.DynamoDB.Converter.unmarshall(data.Items[0]);
+	} catch (err) {
+		console.error(err);
+	}
 }
+
+// async function main() {
+//   var result = await createNewUser("Test")
+// 	// var result = await findUserByUserId("b91abfdf-8fdc-4e4f-8649-4e90a95db0ef");
+//   // var result = await findUserByEmail("Test");
+//   console.log(result);
+// }
+
+// main();
 
 module.exports = { User, createUserTable, createNewUser, findUserByUserId, findUserByEmail }
