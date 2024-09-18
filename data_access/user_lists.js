@@ -74,7 +74,7 @@ function createUserListTable() {
 	});
 }
 
-function putList(obj) {
+async function putList(obj) {
 	var list = new UserList(JSON.parse(obj));
 	var listId;
 	var createdAt;
@@ -115,16 +115,15 @@ function putList(obj) {
 		}
 	};
 
-	ddb.putItem(params, function (err, data) {
-		if (err) {
-			console.log("Error", err);
-		} else {
-			console.log("Success", params.Item, data);
-		}
-	});
+	try {
+		await ddb.putItem(params).promise();
+		return listId;
+	} catch (err) {
+		console.error(err);
+	}
 }
 
-function deleteList(deleteListId, deleteUserId) {
+async function deleteList(deleteListId, deleteUserId) {
 	var params = {
 		TableName: userListTableName,
 		Key: {
@@ -133,16 +132,15 @@ function deleteList(deleteListId, deleteUserId) {
 		},
 	};
 
-	ddb.deleteItem(params, function (err, data) {
-		if (err) {
-			console.log("Error", err);
-		} else {
-			console.log("Success", data);
-		}
-	});
+	try {
+		await ddb.deleteItem(params).promise();
+		return deleteListId;
+	} catch (err) {
+		console.error(err);
+	}
 }
 
-function findListsForUser(scanUserId) {
+async function findListsForUser(scanUserId) {
 	var params = {
 		TableName: userListTableName,
 		ExpressionAttributeValues: {
@@ -150,17 +148,19 @@ function findListsForUser(scanUserId) {
 		},
 		FilterExpression: userId + " = :u"
 	};
-	  
-	ddb.scan(params, function (err, data) {
-		if (err) {
-			console.log("Error", err);
-		} else {
-			console.log("Success", data);
-		}
-	});
+
+	try {
+		let lists = await ddb.scan(params).promise();
+		let unmarshalledLists = lists.Items.map( (item) => {
+			return AWS.DynamoDB.Converter.unmarshall(item);
+		});
+		return unmarshalledLists;
+	} catch (err) {
+		console.error(err);
+	}
 }
 
-function findList(queryListId, queryUserId) {
+async function findList(queryListId, queryUserId) {
 	var params = {
 		TableName: userListTableName,
 		ExpressionAttributeValues: {
@@ -170,188 +170,193 @@ function findList(queryListId, queryUserId) {
 		},
 		KeyConditionExpression: userId + " = :u and " + listId + " = :l"
 	};
-	  
-	ddb.query(params, function (err, data) {
-		if (err) {
-			console.log("Error", err);
-		} else {
-			console.log("Success", data);
-		}
-	});
+	
+	try {
+		let list = await ddb.query(params).promise();
+		return AWS.DynamoDB.Converter.unmarshall(list.Items[0]);
+	} catch (err) {
+		console.error(err);
+	}
 }
 
-var obj = {
-		"units": [
-			{
-				"unitId": "qa",
-				"count": 1,
-				"hasUniques": true,
-				"totalUnitCost": 110,
-				"unitObjectString": "qacwrf",
-				"upgradesEquipped": [
-					"cw",
-					"rf",
-					null,
-					null,
-					null
-				],
-				"loadoutUpgrades": [],
-				"additionalUpgradeSlots": [],
-				"validationIssues": [],
-				"upgradeInteractions": {}
-			},
-			{
-				"unitId": "ax",
-				"count": 1,
-				"hasUniques": true,
-				"totalUnitCost": 115,
-				"unitObjectString": "axdgdc",
-				"upgradesEquipped": [
-					"dg",
-					null,
-					"dc"
-				],
-				"loadoutUpgrades": [],
-				"additionalUpgradeSlots": [],
-				"validationIssues": [],
-				"upgradeInteractions": {}
-			},
-			{
-				"unitId": "kx",
-				"count": 1,
-				"hasUniques": true,
-				"totalUnitCost": 126,
-				"unitObjectString": "kxlidhdpll",
-				"upgradesEquipped": [
-					"li",
-					"dh",
-					"dp",
-					null,
-					"ll",
-					null
-				],
-				"loadoutUpgrades": [],
-				"additionalUpgradeSlots": [],
-				"validationIssues": [],
-				"upgradeInteractions": {}
-			},
-			{
-				"unitId": "px",
-				"count": 2,
-				"hasUniques": false,
-				"totalUnitCost": 220,
-				"unitObjectString": "pxqdli",
-				"upgradesEquipped": [
-					"qd",
-					"li",
-					null,
-					null,
-					null
-				],
-				"loadoutUpgrades": [],
-				"additionalUpgradeSlots": [],
-				"validationIssues": [],
-				"upgradeInteractions": {}
-			},
-			{
-				"unitId": "gx",
-				"count": 3,
-				"hasUniques": false,
-				"totalUnitCost": 168,
-				"unitObjectString": "gxiw",
-				"upgradesEquipped": [
-					"iw",
-					null,
-					null,
-					null
-				],
-				"loadoutUpgrades": [],
-				"additionalUpgradeSlots": [],
-				"validationIssues": [],
-				"upgradeInteractions": {}
-			},
-			{
-				"unitId": "gx",
-				"count": 1,
-				"hasUniques": false,
-				"totalUnitCost": 52,
-				"unitObjectString": "gxog",
-				"upgradesEquipped": [
-					null,
-					"og",
-					null,
-					null
-				],
-				"loadoutUpgrades": [],
-				"additionalUpgradeSlots": [],
-				"validationIssues": [],
-				"upgradeInteractions": {}
-			}
-		],
-		"commandCards": [
-			"mg",
-			"gf",
-			"gg",
-			"lo",
-			"bq",
-			"lp"
-		],
-		"contingencies": [],
-		"objectiveCards": [
-			"Ob",
-			"Oc",
-			"Od",
-			"Of"
-		],
-		"deploymentCards": [
-			"Da",
-			"De",
-			"Dm",
-			"Db"
-		],
-		"conditionCards": [
-			"Ca",
-			"Cg",
-			"Cf",
-			"Ce"
-		],
-		"uniques": [
-			"qa",
-			"ax",
-			"kx"
-		],
-		"commanders": [
-			"Super Tactical Droid",
-			"Bossk",
-			"Cad Bane"
-		],
-		"unitObjectStrings": [
-			"qacwrf",
-			"axdgdc",
-			"kxlidhdpll",
-			"pxqdli",
-			"gxiw",
-			"gxog"
-		],
-		"title": "Double Bounty",
-		"mode": "standard mode",
-		"faction": "separatists",
-		"pointTotal": 791,
-		"battleForce": "",
-		"unitCounts": {
-			"commander": 1,
-			"operative": 2,
-			"corps": 5,
-			"special": 2,
-			"support": 0,
-			"heavy": 0
-		},
-		"userId": "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef",
-		"listId": "8f9972fe-fb8d-4320-92b6-dda45426ca9f",
-		"createdAt": "2023-09-26T01:06:17.614Z",
-		"updatedAt": "2024-06-03T02:23:44.663Z",
-}
+// var obj = {
+// 		"units": [
+// 			{
+// 				"unitId": "qa",
+// 				"count": 1,
+// 				"hasUniques": true,
+// 				"totalUnitCost": 110,
+// 				"unitObjectString": "qacwrf",
+// 				"upgradesEquipped": [
+// 					"cw",
+// 					"rf",
+// 					null,
+// 					null,
+// 					null
+// 				],
+// 				"loadoutUpgrades": [],
+// 				"additionalUpgradeSlots": [],
+// 				"validationIssues": [],
+// 				"upgradeInteractions": {}
+// 			},
+// 			{
+// 				"unitId": "ax",
+// 				"count": 1,
+// 				"hasUniques": true,
+// 				"totalUnitCost": 115,
+// 				"unitObjectString": "axdgdc",
+// 				"upgradesEquipped": [
+// 					"dg",
+// 					null,
+// 					"dc"
+// 				],
+// 				"loadoutUpgrades": [],
+// 				"additionalUpgradeSlots": [],
+// 				"validationIssues": [],
+// 				"upgradeInteractions": {}
+// 			},
+// 			{
+// 				"unitId": "kx",
+// 				"count": 1,
+// 				"hasUniques": true,
+// 				"totalUnitCost": 126,
+// 				"unitObjectString": "kxlidhdpll",
+// 				"upgradesEquipped": [
+// 					"li",
+// 					"dh",
+// 					"dp",
+// 					null,
+// 					"ll",
+// 					null
+// 				],
+// 				"loadoutUpgrades": [],
+// 				"additionalUpgradeSlots": [],
+// 				"validationIssues": [],
+// 				"upgradeInteractions": {}
+// 			},
+// 			{
+// 				"unitId": "px",
+// 				"count": 2,
+// 				"hasUniques": false,
+// 				"totalUnitCost": 220,
+// 				"unitObjectString": "pxqdli",
+// 				"upgradesEquipped": [
+// 					"qd",
+// 					"li",
+// 					null,
+// 					null,
+// 					null
+// 				],
+// 				"loadoutUpgrades": [],
+// 				"additionalUpgradeSlots": [],
+// 				"validationIssues": [],
+// 				"upgradeInteractions": {}
+// 			},
+// 			{
+// 				"unitId": "gx",
+// 				"count": 3,
+// 				"hasUniques": false,
+// 				"totalUnitCost": 168,
+// 				"unitObjectString": "gxiw",
+// 				"upgradesEquipped": [
+// 					"iw",
+// 					null,
+// 					null,
+// 					null
+// 				],
+// 				"loadoutUpgrades": [],
+// 				"additionalUpgradeSlots": [],
+// 				"validationIssues": [],
+// 				"upgradeInteractions": {}
+// 			},
+// 			{
+// 				"unitId": "gx",
+// 				"count": 1,
+// 				"hasUniques": false,
+// 				"totalUnitCost": 52,
+// 				"unitObjectString": "gxog",
+// 				"upgradesEquipped": [
+// 					null,
+// 					"og",
+// 					null,
+// 					null
+// 				],
+// 				"loadoutUpgrades": [],
+// 				"additionalUpgradeSlots": [],
+// 				"validationIssues": [],
+// 				"upgradeInteractions": {}
+// 			}
+// 		],
+// 		"commandCards": [
+// 			"mg",
+// 			"gf",
+// 			"gg",
+// 			"lo",
+// 			"bq",
+// 			"lp"
+// 		],
+// 		"contingencies": [],
+// 		"objectiveCards": [
+// 			"Ob",
+// 			"Oc",
+// 			"Od",
+// 			"Of"
+// 		],
+// 		"deploymentCards": [
+// 			"Da",
+// 			"De",
+// 			"Dm",
+// 			"Db"
+// 		],
+// 		"conditionCards": [
+// 			"Ca",
+// 			"Cg",
+// 			"Cf",
+// 			"Ce"
+// 		],
+// 		"uniques": [
+// 			"qa",
+// 			"ax",
+// 			"kx"
+// 		],
+// 		"commanders": [
+// 			"Super Tactical Droid",
+// 			"Bossk",
+// 			"Cad Bane"
+// 		],
+// 		"unitObjectStrings": [
+// 			"qacwrf",
+// 			"axdgdc",
+// 			"kxlidhdpll",
+// 			"pxqdli",
+// 			"gxiw",
+// 			"gxog"
+// 		],
+// 		"title": "Double Bounty",
+// 		"mode": "standard mode",
+// 		"faction": "separatists",
+// 		"pointTotal": 791,
+// 		"battleForce": "",
+// 		"unitCounts": {
+// 			"commander": 1,
+// 			"operative": 2,
+// 			"corps": 4,
+// 			"special": 2,
+// 			"support": 0,
+// 			"heavy": 0
+// 		},
+// 		"userId": "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef",
+// 		// "listId": "8f9972fe-fb8d-4320-92b6-dda45426ca9f",
+// 		"createdAt": "2023-09-26T01:06:17.614Z",
+// 		"updatedAt": "2024-06-03T02:23:44.663Z",
+// }
 
-findList("8f9972fe-fb8d-4320-92b6-dda45426ca9f", "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef");
+// async function main() {
+// 	console.log(await putList(JSON.stringify(obj)))
+// 	// deleteList("2277694e-d456-4056-a17e-d9a108c0f9b8", "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef")
+// 	// const result = await findList("8f9972fe-fb8d-4320-92b6-dda45426ca9f", "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef");
+// }
+
+// main();
 
 module.exports = { UserList, createUserListTable, putList, deleteList, findListsForUser, findList }
