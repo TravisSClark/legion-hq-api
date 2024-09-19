@@ -59,7 +59,8 @@ async function createNewUser(userEmail) {
     TableName: userTableName,
     Item: {
       userId: { S: newUserId },
-      email: { S: userEmail }
+      email: { S: userEmail },
+      createdAt: { S: new Date().toISOString() },
     }
   };
   
@@ -67,7 +68,7 @@ async function createNewUser(userEmail) {
 		await ddb.putItem(params).promise();
 		return newUserId;
 	} catch (err) {
-		console.error(err);
+		throw err;;
 	}
 }
 
@@ -84,7 +85,7 @@ async function findUserByUserId(queryUserId) {
 		var data = await ddb.query(params).promise();
 		return AWS.DynamoDB.Converter.unmarshall(data.Items[0]);
 	} catch (err) {
-		console.error(err);
+		throw err;;
 	}
 }
 
@@ -102,7 +103,7 @@ async function findUserByEmail(scanEmail) {
 		var data = await ddb.scan(params).promise();
 		return AWS.DynamoDB.Converter.unmarshall(data.Items[0]);
 	} catch (err) {
-		console.error(err);
+		throw err;;
 	}
 }
 

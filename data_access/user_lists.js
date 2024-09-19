@@ -119,7 +119,7 @@ async function putList(obj) {
 		await ddb.putItem(params).promise();
 		return listId;
 	} catch (err) {
-		console.error(err);
+		throw err;;
 	}
 }
 
@@ -136,7 +136,7 @@ async function deleteList(deleteListId, deleteUserId) {
 		await ddb.deleteItem(params).promise();
 		return deleteListId;
 	} catch (err) {
-		console.error(err);
+		throw err;;
 	}
 }
 
@@ -156,7 +156,7 @@ async function findListsForUser(scanUserId) {
 		});
 		return unmarshalledLists;
 	} catch (err) {
-		console.error(err);
+		throw err;;
 	}
 }
 
@@ -175,7 +175,7 @@ async function findList(queryListId, queryUserId) {
 		let list = await ddb.query(params).promise();
 		return AWS.DynamoDB.Converter.unmarshall(list.Items[0]);
 	} catch (err) {
-		console.error(err);
+		throw err;;
 	}
 }
 

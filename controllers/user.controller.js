@@ -1,4 +1,4 @@
-var { User } = require("../data_access/user")
+import * as user from require("../data_access/user")
 
 exports.create = (req, res) => {
   if (!req.body.email) {
@@ -6,12 +6,8 @@ exports.create = (req, res) => {
       message: 'Must include an email to create a user.'
     });
   }
-  const user = new User({
-    email: req.body.email,
-    settings: req.body.settings || {}
-  });
   // gotta incrememnt the userId
-  user.save().then(data => {
+  user.createNewUser(req.body.email).then(data => {
     res.send(data);
   }).catch(error => {
     res.status(500).send({
@@ -31,7 +27,7 @@ exports.create = (req, res) => {
 // };
 
 exports.findByUserId = (req, res) => {
-  User.find({ userId: req.params.userId }).then(results => {
+  user.findUserByUserId(req.params.userId).then(results => {
     if (!results) {
       return res.status(404).send({
         message: `The userId: ${req.params.userId} was not found`
@@ -45,7 +41,7 @@ exports.findByUserId = (req, res) => {
 };
 
 exports.findByEmail = (req, res) => {
-  User.find({ email: req.query.email }).then(results => {
+  user.findUserByEmail(req.query.email).then(results => {
     if (!results) {
       return res.status(404).send({
         message: `The email: ${req.query.email} was not found`

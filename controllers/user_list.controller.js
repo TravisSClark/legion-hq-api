@@ -1,4 +1,4 @@
-import * as UserList from '../models/user_list.js';
+import * as userList from '../data_access/user_lists';
 
 exports.create = (req, res) => {
   // TODO: do better/more validation for this...
@@ -7,12 +7,8 @@ exports.create = (req, res) => {
       message: 'Must include a userId to create a list.'
     });
   }
-  const userList = new UserList({
-    ...req.body,
-    title: req.body.title === '' ? 'Untitled' : req.body.title
-  });
   // gotta incrememnt the list_id
-  userList.save().then(data => {
+  userList.putList(req.body).then(data => {
     res.send(data);
   }).catch(error => {
     res.status(500).send({
@@ -21,10 +17,13 @@ exports.create = (req, res) => {
   });
 };
 
-exports.findSome = (req, res) => {
-  let query = {};
-  if ('userId' in req.query) query = { userId: req.query.userId };
-  UserList.find(query).then(results => {
+exports.findListsForUser = (req, res) => {
+  if (!req.params.userId) {
+    return res.status(400).send({
+      message: 'Must include a userId to find lists.'
+    });
+  }
+  userList.findListsForUser(req.query.userId).then(results => {
     res.send(results);
   }).catch(error => {
     res.status(500).send({
@@ -33,11 +32,16 @@ exports.findSome = (req, res) => {
   });
 };
 
-exports.findOne = (req, res) => {
-  UserList.find({ listId: req.params.listId }).then(results => {
+exports.findList = (req, res) => {
+  if (!req.params.listId) {
+    return res.status(400).send({
+      message: 'Must include a listId to find lists.'
+    });
+  }
+  userList.findList(req.params.listId).then(results => {
     if (!results) {
       return res.status(404).send({
-        message: `The listId: ${req.params.userId} not found.`
+        message: `The userId: ${req.params.userId} not found.`
       });
     } else res.send(results);
   }).catch(error => {
@@ -54,11 +58,7 @@ exports.update = (req, res) => {
       message: 'Must include a listId to update a list.'
     });
   }
-  UserList.findOneAndUpdate(
-    { listId: req.params.listId },
-    { ...req.body },
-    { new: true },
-  ).then(results => {
+  userList.findList(req.body).then(results => {
     if (!results) {
       return res.status(404).send({
         message: `The listId: ${req.params.listId} was not found.`
@@ -66,24 +66,19 @@ exports.update = (req, res) => {
     }
     res.send(results);
   }).catch(error => {
-    if (error.kind === 'ObjectId') {
-      return res.status(404).send({
-        message: `The listId: ${req.params.listId} was not found.`
-      });
-    }
     return res.status(500).send({
-      message: `Internal server error (updating listId: ${req.params.listId}).`
+      message: error.message || 'Internal server error (updating listId: ${req.params.listId}).'
     });
   });
 };
 
 exports.delete = (req, res) => {
-  if (req.params.listId === '') {
+  if (req.params.listId === '' || req.params.userId === '') {
     return res.status(400).send({
-      message: 'The listId cannot be an empty string.'
+      message: 'The listId and userId cannot be an empty string.'
     });
   }
-  UserList.remove({ listId: req.params.listId }).then(results => {
+  userList.deleteList(req.params.listId, req.params.userId).then(results => {
     if (!results) {
       return res.status(404).send({
         message: `The listId: ${req.params.listId} was not found.`
@@ -91,13 +86,8 @@ exports.delete = (req, res) => {
     }
     res.send({ isListDeleted: true });
   }).catch(error => {
-    if (error.kind === 'ObjectId' || error.name === 'NotFound') {
-      return res.status(404).send({
-        message: `The listId: ${req.params.listId} was not found.`
-      });
-    }
-    return res.status(500).send({
-      message: `Internal server error (deleting listId: ${req.params.listId}).`
+    return res.status(404).send({
+      message: error.message || `The listId: ${req.params.listId} was not found.`
     });
   });
 };

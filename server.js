@@ -1,5 +1,5 @@
 
-import * from './routes/user.routes.js';
+import * as routes from './routes/user.routes.js';
 require('./routes/user_list.routes.js')(app);
 
 const express = require('express');
