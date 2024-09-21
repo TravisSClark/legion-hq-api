@@ -1,4 +1,4 @@
-import * as user from require("../data_access/user")
+const user = require("../data_access/user")
 
 exports.create = (req, res) => {
   if (!req.body.email) {

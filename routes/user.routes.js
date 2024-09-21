@@ -1,5 +1,6 @@
-import * as users from '../controllers/user.controller';
-exports = (app) => {
+const users = require('../controllers/user.controller');
+
+module.exports = (app) => {
  
   // TODO: app.get('/users', users.findAll);
   app.get('/users', users.findByEmail);

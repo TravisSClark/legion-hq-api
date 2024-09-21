@@ -75,7 +75,7 @@ function createUserListTable() {
 }
 
 async function putList(obj) {
-	var list = new UserList(JSON.parse(obj));
+	var list = new UserList(obj);
 	var listId;
 	var createdAt;
 	if (list.listId) {

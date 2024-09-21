@@ -1,7 +1,3 @@
-
-import * as routes from './routes/user.routes.js';
-require('./routes/user_list.routes.js')(app);
-
 const express = require('express');
 const fs = require('fs');
 const compression = require('compression');
@@ -28,10 +24,11 @@ app.use((req, res, next) => {
   next();
 });
 
+require('./routes/user.routes.js')(app);
+require('./routes/user_list.routes.js')(app);
+
 app.get('/', (req, res) => res.status(200).send('legion-hq-api'));
 
-const server = https.createServer({ key, cert }, app);
-
-server.listen(config.port, () => {
-  console.log(`Server is running on port ${config.port}.`);
+app.listen(3000, () => {
+  console.log(`Server is running on port 3000.`);
 });
