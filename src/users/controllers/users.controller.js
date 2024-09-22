@@ -1,4 +1,4 @@
-const user = require("../data_access/user")
+const user = require("../data_access/users")
 
 exports.create = (req, res) => {
   if (!req.body.email) {

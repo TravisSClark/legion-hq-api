@@ -1,0 +1,27 @@
+service: legion-hq-api
+
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!.vscode'
+    - '!src/**'
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+
+functions:
+  users:
+    handler: src/users/user_app.js
+    name: legion-hq-api-users
+    package:
+      patterns:
+        - "src/users/**"
+  user-lists:
+    handler: src/users/user_lists_app.js
+    name: legion-hq-api-user-lists
+    package:
+      patterns:
+        - "src/user_lists/**"

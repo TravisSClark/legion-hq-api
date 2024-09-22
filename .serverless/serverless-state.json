@@ -1,0 +1,275 @@
+{
+  "service": {
+    "service": "legion-hq-api",
+    "serviceObject": {
+      "name": "legion-hq-api"
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs20.x",
+      "region": "us-east-1",
+      "stage": "dev",
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "UsersLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/legion-hq-api-users"
+            }
+          },
+          "UserDashlistsLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/legion-hq-api-user-lists"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "legion-hq-api",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/legion-hq-api-users:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/legion-hq-api-user-lists:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/legion-hq-api-users:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/legion-hq-api-user-lists:*:*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "legion-hq-api",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "UsersLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-95d26932-48d3",
+                "S3Key": "serverless/legion-hq-api/dev/1727043956272-2024-09-22T22:25:56.272Z/users.zip"
+              },
+              "Handler": "src/users/user_app.js",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "legion-hq-api-users",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UsersLogGroup"
+            ]
+          },
+          "UserDashlistsLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-95d26932-48d3",
+                "S3Key": "serverless/legion-hq-api/dev/1727043956272-2024-09-22T22:25:56.272Z/user-lists.zip"
+              },
+              "Handler": "src/users/user_lists_app.js",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "legion-hq-api-user-lists",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UserDashlistsLogGroup"
+            ]
+          },
+          "UsersLambdaVersionewS3vsKevtn9COWETMK2pVeFReFGsPp8ybU4tDnIj9o": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UsersLambdaFunction"
+              },
+              "CodeSha256": "47Yi9dFWd4Ddy68V00LRFme0buwCE3AUNj3k9yT0AeA="
+            }
+          },
+          "UserDashlistsLambdaVersioncA6jNQrEWnqvtSamVHsz4OE5YgbT72GcHVNtTP6cM": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UserDashlistsLambdaFunction"
+              },
+              "CodeSha256": "bXw4XDwp96aMqFsi8hAbRBSskQOS/AGI2A08YvuRQ00="
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-us-east-1-95d26932-48d3",
+            "Export": {
+              "Name": "sls-legion-hq-api-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "UsersLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UsersLambdaVersionewS3vsKevtn9COWETMK2pVeFReFGsPp8ybU4tDnIj9o"
+            },
+            "Export": {
+              "Name": "sls-legion-hq-api-dev-UsersLambdaFunctionQualifiedArn"
+            }
+          },
+          "UserDashlistsLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UserDashlistsLambdaVersioncA6jNQrEWnqvtSamVHsz4OE5YgbT72GcHVNtTP6cM"
+            },
+            "Export": {
+              "Name": "sls-legion-hq-api-dev-UserDashlistsLambdaFunctionQualifiedArn"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "pluginsData": {},
+    "functions": {
+      "users": {
+        "handler": "src/users/user_app.js",
+        "name": "legion-hq-api-users",
+        "package": {
+          "patterns": [
+            "src/users/**"
+          ],
+          "artifact": "D:\\Projects\\legion-hq-api\\.serverless\\users.zip"
+        },
+        "events": [],
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs20.x",
+        "vpc": {},
+        "versionLogicalId": "UsersLambdaVersionewS3vsKevtn9COWETMK2pVeFReFGsPp8ybU4tDnIj9o"
+      },
+      "user-lists": {
+        "handler": "src/users/user_lists_app.js",
+        "name": "legion-hq-api-user-lists",
+        "package": {
+          "patterns": [
+            "src/user_lists/**"
+          ],
+          "artifact": "D:\\Projects\\legion-hq-api\\.serverless\\user-lists.zip"
+        },
+        "events": [],
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs20.x",
+        "vpc": {},
+        "versionLogicalId": "UserDashlistsLambdaVersioncA6jNQrEWnqvtSamVHsz4OE5YgbT72GcHVNtTP6cM"
+      }
+    },
+    "configValidationMode": "warn",
+    "serviceFilename": "serverless.yml",
+    "initialServerlessConfig": {
+      "service": "legion-hq-api",
+      "package": {
+        "patterns": [
+          "!node_modules/**",
+          "!.vscode",
+          "!src/**"
+        ],
+        "individually": true,
+        "artifactsS3KeyDirname": "serverless/legion-hq-api/dev/code-artifacts",
+        "deploymentBucket": "serverless-framework-deployments-us-east-1-95d26932-48d3",
+        "artifactDirectoryName": "serverless/legion-hq-api/dev/1727043956272-2024-09-22T22:25:56.272Z"
+      },
+      "provider": {
+        "$ref": "$[\"service\"][\"provider\"]"
+      },
+      "functions": {
+        "$ref": "$[\"service\"][\"functions\"]"
+      }
+    },
+    "appId": null,
+    "orgId": null,
+    "layers": {}
+  },
+  "package": {
+    "individually": true,
+    "artifactDirectoryName": "serverless/legion-hq-api/dev/1727043956272-2024-09-22T22:25:56.272Z",
+    "artifact": ""
+  }
+}
