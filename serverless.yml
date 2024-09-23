@@ -2,9 +2,9 @@ service: legion-hq-api
 
 package:
   patterns:
-    - '!node_modules/**'
     - '!.vscode'
     - '!src/**'
+    - '!*.js'
   individually: true
 
 provider:
@@ -14,14 +14,16 @@ provider:
 
 functions:
   users:
-    handler: src/users/user_app.js
+    handler: users_app.handler
     name: legion-hq-api-users
     package:
       patterns:
         - "src/users/**"
+        - "users_app.js"
   user-lists:
-    handler: src/users/user_lists_app.js
+    handler: user_lists_app.handler
     name: legion-hq-api-user-lists
     package:
       patterns:
         - "src/user_lists/**"
+        - "user_lists_app.js"

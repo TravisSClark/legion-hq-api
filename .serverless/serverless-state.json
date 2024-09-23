@@ -115,9 +115,9 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-95d26932-48d3",
-                "S3Key": "serverless/legion-hq-api/dev/1727043956272-2024-09-22T22:25:56.272Z/users.zip"
+                "S3Key": "serverless/legion-hq-api/dev/1727104690204-2024-09-23T15:18:10.204Z/users.zip"
               },
-              "Handler": "src/users/user_app.js",
+              "Handler": "users_app.handler",
               "Runtime": "nodejs20.x",
               "FunctionName": "legion-hq-api-users",
               "MemorySize": 1024,
@@ -138,9 +138,9 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-95d26932-48d3",
-                "S3Key": "serverless/legion-hq-api/dev/1727043956272-2024-09-22T22:25:56.272Z/user-lists.zip"
+                "S3Key": "serverless/legion-hq-api/dev/1727104690204-2024-09-23T15:18:10.204Z/user-lists.zip"
               },
-              "Handler": "src/users/user_lists_app.js",
+              "Handler": "user_lists_app.handler",
               "Runtime": "nodejs20.x",
               "FunctionName": "legion-hq-api-user-lists",
               "MemorySize": 1024,
@@ -156,24 +156,24 @@
               "UserDashlistsLogGroup"
             ]
           },
-          "UsersLambdaVersionewS3vsKevtn9COWETMK2pVeFReFGsPp8ybU4tDnIj9o": {
+          "UsersLambdaVersionriRWwPkuqwcKY3xPsUNuVEKbpxou3DAtH6OJfI0q4Y": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UsersLambdaFunction"
               },
-              "CodeSha256": "47Yi9dFWd4Ddy68V00LRFme0buwCE3AUNj3k9yT0AeA="
+              "CodeSha256": "+jQjNGhftHXU+uTSWH2NWYZajO/8Mn5aRkelHBcpjPc="
             }
           },
-          "UserDashlistsLambdaVersioncA6jNQrEWnqvtSamVHsz4OE5YgbT72GcHVNtTP6cM": {
+          "UserDashlistsLambdaVersionzoN95mT3s7u7yOM3zZSPDAtzRueG4kudQ7pOGSfJAo": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UserDashlistsLambdaFunction"
               },
-              "CodeSha256": "bXw4XDwp96aMqFsi8hAbRBSskQOS/AGI2A08YvuRQ00="
+              "CodeSha256": "TifqrQg5AffzKVzH5XxSHsn6tncxvuDilZoTfiY5O2Y="
             }
           }
         },
@@ -187,7 +187,7 @@
           "UsersLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UsersLambdaVersionewS3vsKevtn9COWETMK2pVeFReFGsPp8ybU4tDnIj9o"
+              "Ref": "UsersLambdaVersionriRWwPkuqwcKY3xPsUNuVEKbpxou3DAtH6OJfI0q4Y"
             },
             "Export": {
               "Name": "sls-legion-hq-api-dev-UsersLambdaFunctionQualifiedArn"
@@ -196,7 +196,7 @@
           "UserDashlistsLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UserDashlistsLambdaVersioncA6jNQrEWnqvtSamVHsz4OE5YgbT72GcHVNtTP6cM"
+              "Ref": "UserDashlistsLambdaVersionzoN95mT3s7u7yOM3zZSPDAtzRueG4kudQ7pOGSfJAo"
             },
             "Export": {
               "Name": "sls-legion-hq-api-dev-UserDashlistsLambdaFunctionQualifiedArn"
@@ -209,11 +209,12 @@
     "pluginsData": {},
     "functions": {
       "users": {
-        "handler": "src/users/user_app.js",
+        "handler": "users_app.handler",
         "name": "legion-hq-api-users",
         "package": {
           "patterns": [
-            "src/users/**"
+            "src/users/**",
+            "users_app.js"
           ],
           "artifact": "D:\\Projects\\legion-hq-api\\.serverless\\users.zip"
         },
@@ -222,14 +223,15 @@
         "timeout": 6,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "UsersLambdaVersionewS3vsKevtn9COWETMK2pVeFReFGsPp8ybU4tDnIj9o"
+        "versionLogicalId": "UsersLambdaVersionriRWwPkuqwcKY3xPsUNuVEKbpxou3DAtH6OJfI0q4Y"
       },
       "user-lists": {
-        "handler": "src/users/user_lists_app.js",
+        "handler": "user_lists_app.handler",
         "name": "legion-hq-api-user-lists",
         "package": {
           "patterns": [
-            "src/user_lists/**"
+            "src/user_lists/**",
+            "user_lists_app.js"
           ],
           "artifact": "D:\\Projects\\legion-hq-api\\.serverless\\user-lists.zip"
         },
@@ -238,7 +240,7 @@
         "timeout": 6,
         "runtime": "nodejs20.x",
         "vpc": {},
-        "versionLogicalId": "UserDashlistsLambdaVersioncA6jNQrEWnqvtSamVHsz4OE5YgbT72GcHVNtTP6cM"
+        "versionLogicalId": "UserDashlistsLambdaVersionzoN95mT3s7u7yOM3zZSPDAtzRueG4kudQ7pOGSfJAo"
       }
     },
     "configValidationMode": "warn",
@@ -247,14 +249,14 @@
       "service": "legion-hq-api",
       "package": {
         "patterns": [
-          "!node_modules/**",
           "!.vscode",
-          "!src/**"
+          "!src/**",
+          "!*.js"
         ],
         "individually": true,
         "artifactsS3KeyDirname": "serverless/legion-hq-api/dev/code-artifacts",
         "deploymentBucket": "serverless-framework-deployments-us-east-1-95d26932-48d3",
-        "artifactDirectoryName": "serverless/legion-hq-api/dev/1727043956272-2024-09-22T22:25:56.272Z"
+        "artifactDirectoryName": "serverless/legion-hq-api/dev/1727104690204-2024-09-23T15:18:10.204Z"
       },
       "provider": {
         "$ref": "$[\"service\"][\"provider\"]"
@@ -269,7 +271,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/legion-hq-api/dev/1727043956272-2024-09-22T22:25:56.272Z",
+    "artifactDirectoryName": "serverless/legion-hq-api/dev/1727104690204-2024-09-23T15:18:10.204Z",
     "artifact": ""
   }
 }
