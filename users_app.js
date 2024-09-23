@@ -27,7 +27,7 @@ require('./src/users/routes/users.routes.js')(users_app);
 
 users_app.get('/', (req, res) => res.status(200).send('legion-hq-api-user'));
 
-// app.listen(3000, () => {
+// users_app.listen(3000, () => {
 //   console.log(`Server is running on port 3000.`);
 // });
 
