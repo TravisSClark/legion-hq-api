@@ -75,7 +75,7 @@ function createUserListTable() {
 }
 
 async function putList(obj) {
-	var list = new UserList(JSON.parse(obj));
+	var list = new UserList(obj);
 	var listId;
 	var createdAt;
 	if (list.listId) {
@@ -352,7 +352,7 @@ async function findList(queryListId, queryUserId) {
 // }
 
 // async function main() {
-// 	var result = await putList(JSON.stringify(obj));
+// 	var result = await putList(obj);
 // 	// deleteList("2277694e-d456-4056-a17e-d9a108c0f9b8", "2cae5304-0998-4492-8cb7-4214901a341b")
 // 	// const result = await findList("01af4c63-c259-406b-8101-ac0801a4c1f2", "2cae5304-0998-4492-8cb7-4214901a341b");
 // 	console.log(result);

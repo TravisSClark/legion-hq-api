@@ -62,7 +62,7 @@ exports.update = (req, res) => {
       message: 'ListId must match.'
     });
   }
-  userList.putList(req.params.listId, req.body).then(results => {
+  userList.putList(req.body).then(results => {
     if (!results) {
       return res.status(404).send({
         message: `The listId: ${req.params.listId} was not found.`
