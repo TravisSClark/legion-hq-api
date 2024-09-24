@@ -7,7 +7,6 @@ exports.create = (req, res) => {
       message: 'Must include a userId to create a list.'
     });
   }
-  // gotta incrememnt the list_id
   userList.putList(req.body).then(data => {
     res.send(data);
   }).catch(error => {
@@ -58,7 +57,12 @@ exports.update = (req, res) => {
       message: 'Must include a listId to update a list.'
     });
   }
-  userList.putList(req.body).then(results => {
+  if (req.params.listId !== req.body.listId) {
+    return res.status(400).send({
+      message: 'ListId must match.'
+    });
+  }
+  userList.putList(req.params.listId, req.body).then(results => {
     if (!results) {
       return res.status(404).send({
         message: `The listId: ${req.params.listId} was not found.`
