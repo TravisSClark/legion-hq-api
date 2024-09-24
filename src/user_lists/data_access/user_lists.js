@@ -75,7 +75,7 @@ function createUserListTable() {
 }
 
 async function putList(obj) {
-	var list = new UserList(obj);
+	var list = new UserList(JSON.parse(obj));
 	var listId;
 	var createdAt;
 	if (list.listId) {
@@ -345,16 +345,16 @@ async function findList(queryListId, queryUserId) {
 // 			"support": 0,
 // 			"heavy": 0
 // 		},
-// 		"userId": "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef",
-// 		// "listId": "8f9972fe-fb8d-4320-92b6-dda45426ca9f",
+// 		"userId": "2cae5304-0998-4492-8cb7-4214901a341b",
+// 		// "listId": "01af4c63-c259-406b-8101-ac0801a4c1f2",
 // 		"createdAt": "2023-09-26T01:06:17.614Z",
-// 		"updatedAt": "2024-06-03T02:23:44.663Z",
+// 		"updatedAt": "2024-06-03T02:23:44.663Z"
 // }
 
 // async function main() {
 // 	var result = await putList(JSON.stringify(obj));
-// 	// deleteList("2277694e-d456-4056-a17e-d9a108c0f9b8", "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef")
-// 	// const result = await findList("8f9972fe-fb8d-4320-92b6-dda45426ca9f", "b91abfdf-8fdc-4e4f-8649-4e90a95db0ef");
+// 	// deleteList("2277694e-d456-4056-a17e-d9a108c0f9b8", "2cae5304-0998-4492-8cb7-4214901a341b")
+// 	// const result = await findList("01af4c63-c259-406b-8101-ac0801a4c1f2", "2cae5304-0998-4492-8cb7-4214901a341b");
 // 	console.log(result);
 // }
 
