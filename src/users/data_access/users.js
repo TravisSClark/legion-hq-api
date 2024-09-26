@@ -53,20 +53,20 @@ function createUserTable() {
   });
 }
 
-async function createNewUser(userEmail) {
-  var newUserId = uuid.v4();
+async function createNewUser(email) {
+  var userId = uuid.v4();
   var params = {
     TableName: userTableName,
     Item: {
-      userId: { S: newUserId },
-      email: { S: userEmail },
+      userId: { S: userId },
+      email: { S: email },
       createdAt: { S: new Date().toISOString() },
     }
   };
   
   try {
 		await ddb.putItem(params).promise();
-		return newUserId;
+		return { userId, email };
 	} catch (err) {
 		throw err;;
 	}

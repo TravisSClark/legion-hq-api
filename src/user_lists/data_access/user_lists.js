@@ -85,6 +85,7 @@ async function putList(obj) {
 		listId = uuid.v4();
 		createdAt = new Date().toISOString();
 	}
+	const updatedAt = new Date().toISOString();
 
 	var params = {
 		TableName: userListTableName,
@@ -111,13 +112,13 @@ async function putList(obj) {
 			unitObjectStrings: AWS.DynamoDB.Converter.input(list.unitObjectStrings),
 			unitCounts: AWS.DynamoDB.Converter.input(list.unitCounts),
 			createdAt: { S: createdAt },
-			updatedAt: { S: new Date().toISOString() }
+			updatedAt: { S: updatedAt }
 		}
 	};
 
 	try {
 		await ddb.putItem(params).promise();
-		return listId;
+		return { listId, createdAt, updatedAt };
 	} catch (err) {
 		throw err;;
 	}
