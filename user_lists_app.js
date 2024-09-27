@@ -14,11 +14,11 @@ user_lists_app.use((req, res, next) => {
   );
   res.setHeader(
     'Access-Control-Allow-Methods',
-    'GET, POST, PUT, DELETE'
+    'GET, POST, PUT, DELETE, OPTIONS'
   );
   res.setHeader(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept',
+    'Origin, X-Requested-With, Content-Type, Accept, x-api-key, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Access-Control-Allow-Headers',
   );
   next();
 });
