@@ -161,15 +161,14 @@ async function findListsForUser(scanUserId) {
 	}
 }
 
-async function findList(queryListId, queryUserId) {
+async function findList(queryListId) {
 	var params = {
 		TableName: userListTableName,
 		ExpressionAttributeValues: {
 			":l": { S: queryListId },
-			":u": { S: queryUserId }
 			
 		},
-		KeyConditionExpression: userId + " = :u and " + listId + " = :l"
+		KeyConditionExpression: listId + " = :l"
 	};
 	
 	try {
@@ -353,9 +352,9 @@ async function findList(queryListId, queryUserId) {
 // }
 
 // async function main() {
-// 	var result = await putList(obj);
+// 	// var result = await putList(obj);
 // 	// deleteList("2277694e-d456-4056-a17e-d9a108c0f9b8", "2cae5304-0998-4492-8cb7-4214901a341b")
-// 	// const result = await findList("01af4c63-c259-406b-8101-ac0801a4c1f2", "2cae5304-0998-4492-8cb7-4214901a341b");
+// 	const result = await findList("53fbea48-4548-473d-b636-5f0a72d63393");
 // 	console.log(result);
 // }
 

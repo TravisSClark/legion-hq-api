@@ -37,10 +37,10 @@ exports.findList = (req, res) => {
       message: 'Must include a listId to find lists.'
     });
   }
-  userList.findList(req.params.listId, req.query.userId).then(results => {
+  userList.findList(req.params.listId).then(results => {
     if (!results) {
       return res.status(404).send({
-        message: `The userId: ${req.query.userId} not found.`
+        message: `The listId: ${req.params.listId} not found.`
       });
     } else res.send(results);
   }).catch(error => {
