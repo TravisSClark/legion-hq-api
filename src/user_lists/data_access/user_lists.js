@@ -2,7 +2,7 @@ var uuid = require("uuid");
 
 var AWS = require("aws-sdk");
 AWS.config.update({region: "us-east-1"});
-var ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
+var ddb = new AWS.DynamoDB();
 
 const userListTableName = "user_lists";
 const listId = "listId";
@@ -151,8 +151,14 @@ async function findListsForUser(scanUserId) {
 	};
 
 	try {
-		let lists = await ddb.scan(params).promise();
-		let unmarshalledLists = lists.Items.map( (item) => {
+		let response = await ddb.scan(params).promise();
+		let lists = response.Items
+		while (response.LastEvaluatedKey) {
+			params.ExclusiveStartKey = response.LastEvaluatedKey;
+			response = await ddb.scan(params).promise();
+			lists.push.apply(lists, response.Items);
+		}
+		let unmarshalledLists = lists.map( (item) => {
 			return AWS.DynamoDB.Converter.unmarshall(item);
 		});
 		return unmarshalledLists;
@@ -354,7 +360,8 @@ async function findList(queryListId) {
 // async function main() {
 // 	// var result = await putList(obj);
 // 	// deleteList("2277694e-d456-4056-a17e-d9a108c0f9b8", "2cae5304-0998-4492-8cb7-4214901a341b")
-// 	const result = await findList("53fbea48-4548-473d-b636-5f0a72d63393");
+// 	// const result = await findList("53fbea48-4548-473d-b636-5f0a72d63393");
+// 	const result = await findListsForUser("484f1fec-ba97-43ea-84de-9604b95016ce");
 // 	console.log(result);
 // }
 

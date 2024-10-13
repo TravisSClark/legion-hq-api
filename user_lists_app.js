@@ -29,7 +29,7 @@ require('./src/user_lists/routes/user_list.routes.js')(user_lists_app);
 user_lists_app.get('/', (req, res) => res.status(200).send('legion-hq-api-user-lists'));
 
 // user_lists_app.listen(3001, () => {
-//   console.log(`Server is running on port 3000.`);
+//   console.log(`Server is running on port 3001.`);
 // });
 
 module.exports.handler = serverless(user_lists_app);
