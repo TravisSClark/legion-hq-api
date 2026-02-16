@@ -32,6 +32,9 @@ function UserList(obj) {
   this.unitCounts = {};
   this.createdAt = "";
   this.updatedAt = "";
+  this.wins = 0;
+  this.loses = 0;
+  this.notes = "";
 
   for (var prop in obj) this[prop] = obj[prop];
 }
@@ -112,7 +115,10 @@ async function putList(obj) {
 			unitObjectStrings: AWS.DynamoDB.Converter.input(list.unitObjectStrings),
 			unitCounts: AWS.DynamoDB.Converter.input(list.unitCounts),
 			createdAt: { S: createdAt },
-			updatedAt: { S: updatedAt }
+			updatedAt: { S: updatedAt },
+			wins: { S: list.wins.toString() },
+			loses: { S: list.loses.toString() },
+			notes: { S: list.notes }
 		}
 	};
 
@@ -357,14 +363,14 @@ async function findList(queryListId) {
 // 		"updatedAt": "2024-06-03T02:23:44.663Z"
 // }
 
-// async function main() {
-// 	// var result = await putList(obj);
-// 	// deleteList("2277694e-d456-4056-a17e-d9a108c0f9b8", "2cae5304-0998-4492-8cb7-4214901a341b")
-// 	// const result = await findList("53fbea48-4548-473d-b636-5f0a72d63393");
-// 	const result = await findListsForUser("484f1fec-ba97-43ea-84de-9604b95016ce");
-// 	console.log(result);
-// }
+async function main() {
+	// var result = await putList(obj);
+	// deleteList("2277694e-d456-4056-a17e-d9a108c0f9b8", "2cae5304-0998-4492-8cb7-4214901a341b")
+	// const result = await findList("53fbea48-4548-473d-b636-5f0a72d63393");
+	const result = await findListsForUser("484f1fec-ba97-43ea-84de-9604b95016ce");
+	console.log(result);
+}
 
-// main();
+main();
 
 module.exports = { UserList, createUserListTable, putList, deleteList, findListsForUser, findList }
