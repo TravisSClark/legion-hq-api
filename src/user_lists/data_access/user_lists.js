@@ -33,7 +33,7 @@ function UserList(obj) {
   this.createdAt = "";
   this.updatedAt = "";
   this.wins = 0;
-  this.loses = 0;
+  this.losses = 0;
   this.notes = "";
 
   for (var prop in obj) this[prop] = obj[prop];
@@ -117,7 +117,7 @@ async function putList(obj) {
 			createdAt: { S: createdAt },
 			updatedAt: { S: updatedAt },
 			wins: { S: list.wins.toString() },
-			loses: { S: list.loses.toString() },
+			losses: { S: list.losses.toString() },
 			notes: { S: list.notes }
 		}
 	};
