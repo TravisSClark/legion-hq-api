@@ -35,6 +35,7 @@ function UserList(obj) {
   this.wins = 0;
   this.losses = 0;
   this.notes = "";
+  this.choices = [];
 
   for (var prop in obj) this[prop] = obj[prop];
 }
@@ -118,7 +119,8 @@ async function putList(obj) {
 			updatedAt: { S: updatedAt },
 			wins: { S: list.wins.toString() },
 			losses: { S: list.losses.toString() },
-			notes: { S: list.notes }
+			notes: { S: list.notes },
+			choices: AWS.DynamoDB.Converter.input(list.choices),
 		}
 	};
 
