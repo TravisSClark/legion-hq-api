@@ -403,4 +403,4 @@ async function findList(queryListId) {
 
 // main();
 
-module.exports = { UserList, createUserListTable, putList, deleteList, findListsForUser, findList }
+module.exports = { UserList, createUserListTable, putList, deleteList, findListsForUser, findListsForUserQuery, findList }
