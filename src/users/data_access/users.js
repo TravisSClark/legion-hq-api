@@ -4,6 +4,7 @@ var AWS = require("aws-sdk");
 AWS.config.update({region: "us-east-1"});
 var ddb = new AWS.DynamoDB();
 const userTableName = "users";
+const userEmailIndexName = "user-email";
 
 function User(obj) {
   this.userId;
@@ -92,15 +93,16 @@ async function findUserByUserId(queryUserId) {
 async function findUserByEmail(scanEmail) {
   var params = {
     TableName: userTableName,
+    IndexName: userEmailIndexName,
     ExpressionAttributeValues: {
       ":e": { S: scanEmail }
     },
-    FilterExpression: "email = :e"
+    KeyConditionExpression: "email = :e"
   };
   
   
   try {
-		var data = await ddb.scan(params).promise();
+		var data = await ddb.query(params).promise();
 		return AWS.DynamoDB.Converter.unmarshall(data.Items[0]);
 	} catch (err) {
 		throw err;;
@@ -109,7 +111,7 @@ async function findUserByEmail(scanEmail) {
 
 // async function main() {
 //   var result = await createNewUser("Test")
-// 	// var result = await findUserByUserId("b91abfdf-8fdc-4e4f-8649-4e90a95db0ef");
+// 	// var result = await findUserByUserId("484f1fec-ba97-43ea-84de-9604b95016ce");
 //   // var result = await findUserByEmail("Test");
 //   console.log(result);
 // }

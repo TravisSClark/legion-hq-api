@@ -31,6 +31,21 @@ exports.findListsForUser = (req, res) => {
   });
 };
 
+exports.findListsForUserQuery = (req, res) => {
+  if (!req.query.userId) {
+    return res.status(400).send({
+      message: 'Must include a userId to find lists.'
+    });
+  }
+  userList.findListsForUserQuery(req.query.userId).then(results => {
+    res.send(results);
+  }).catch(error => {
+    res.status(500).send({
+      message: error.message || 'Internal server error.'
+    });
+  });
+};
+
 exports.findList = (req, res) => {
   if (!req.params.listId) {
     return res.status(400).send({

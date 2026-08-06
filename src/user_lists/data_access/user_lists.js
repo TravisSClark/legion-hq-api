@@ -5,6 +5,7 @@ AWS.config.update({region: "us-east-1"});
 var ddb = new AWS.DynamoDB();
 
 const userListTableName = "user_lists";
+const userListUserIdIndexName = "user-id-lists";
 const listId = "listId";
 const userId = "userId";
 
@@ -164,6 +165,33 @@ async function findListsForUser(scanUserId) {
 		while (response.LastEvaluatedKey) {
 			params.ExclusiveStartKey = response.LastEvaluatedKey;
 			response = await ddb.scan(params).promise();
+			lists.push.apply(lists, response.Items);
+		}
+		let unmarshalledLists = lists.map( (item) => {
+			return AWS.DynamoDB.Converter.unmarshall(item);
+		});
+		return unmarshalledLists;
+	} catch (err) {
+		throw err;;
+	}
+}
+
+async function findListsForUserQuery(queryUserId) {
+	var params = {
+		TableName: userListTableName,
+		IndexName: userListUserIdIndexName,
+		ExpressionAttributeValues: {
+			":u": { S: queryUserId }
+		},
+		KeyConditionExpression: "userId = :u"
+	};
+
+	try {
+		let response = await ddb.query(params).promise();
+		let lists = response.Items
+		while (response.LastEvaluatedKey) {
+			params.ExclusiveStartKey = response.LastEvaluatedKey;
+			response = await ddb.query(params).promise();
 			lists.push.apply(lists, response.Items);
 		}
 		let unmarshalledLists = lists.map( (item) => {
@@ -365,14 +393,14 @@ async function findList(queryListId) {
 // 		"updatedAt": "2024-06-03T02:23:44.663Z"
 // }
 
-async function main() {
-	// var result = await putList(obj);
-	// deleteList("2277694e-d456-4056-a17e-d9a108c0f9b8", "2cae5304-0998-4492-8cb7-4214901a341b")
-	// const result = await findList("53fbea48-4548-473d-b636-5f0a72d63393");
-	const result = await findListsForUser("484f1fec-ba97-43ea-84de-9604b95016ce");
-	console.log(result);
-}
+// async function main() {
+// 	// var result = await putList(obj);
+// 	// deleteList("2277694e-d456-4056-a17e-d9a108c0f9b8", "2cae5304-0998-4492-8cb7-4214901a341b")
+// 	// const result = await findList("53fbea48-4548-473d-b636-5f0a72d63393");
+// 	const result = await findListsForUserQuery("484f1fec-ba97-43ea-84de-9604b95016ce");
+// 	console.log(result);
+// }
 
-main();
+// main();
 
 module.exports = { UserList, createUserListTable, putList, deleteList, findListsForUser, findList }
